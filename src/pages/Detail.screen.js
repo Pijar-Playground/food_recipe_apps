@@ -7,13 +7,25 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
+import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/dist/AntDesign';
 
 function Detail(props) {
+  const {
+    recipe: {currentRecipe, recipeList},
+  } = useSelector(state => state);
   const {navigation} = props;
+  const [detailRecipe, setDetailRecipe] = React.useState(null);
 
   const [type, setType] = React.useState('ingridients');
+
+  React.useEffect(() => {
+    if (currentRecipe) {
+      setDetailRecipe(recipeList.find(res => res.id === currentRecipe));
+    }
+  }, [currentRecipe, recipeList]);
 
   return (
     <>
@@ -30,7 +42,7 @@ function Detail(props) {
             // backgroundColor: 'gray',
           }}>
           <ImageBackground
-            source={require('../assets/dummy_recipe.png')}
+            source={{uri: detailRecipe?.image}}
             resizeMode="cover"
             style={{
               height: '100%',
@@ -61,7 +73,7 @@ function Detail(props) {
                   textShadowRadius: 10,
                 }}
                 numberOfLines={1}>
-                Banana Lemonilo
+                {detailRecipe?.name}
               </Text>
               <Text
                 style={{
@@ -69,9 +81,12 @@ function Detail(props) {
                   fontWeight: 100,
                   marginBottom: 10,
                   color: '#fff',
+                  textShadowColor: 'rgba(0, 0, 0, 0.75)',
+                  textShadowOffset: {width: -1, height: 1},
+                  textShadowRadius: 10,
                 }}
                 numberOfLines={1}>
-                By Chef Ronald Humson
+                {detailRecipe?.created ?? 'unknown'}
               </Text>
             </View>
           </ImageBackground>
@@ -119,18 +134,14 @@ function Detail(props) {
                   padding: 20,
                 }}>
                 <Text>
-                  - 2 slices whole-grain bread (bakery-fresh recommended) {'\n'}
-                  - 1 tablespoon hummus {'\n'}- 2 slices tomato - 1/2 small
-                  cucumber, thinly sliced lengthwise {'\n'}- 1 slice low-fat
-                  cheese
+                  {detailRecipe?.ingridients ?? 'Ingridients not found'}
                 </Text>
               </View>
             ) : (
               <>
                 {/* Video Step View */}
-                {[...new Array(5)].map((item, key) => (
+                <TouchableOpacity onPress={() => Linking.openURL(detailRecipe?.video_step)}>
                   <View
-                    key={key}
                     style={{
                       flexDirection: 'row',
                       backgroundColor: '#FAF7ED',
@@ -150,10 +161,10 @@ function Detail(props) {
                       <Text style={{fontSize: 18, color: '#B6B6B6'}}>
                         Step 1
                       </Text>
-                      <Text>Boil eggs for 3 minutes</Text>
+                      <Text>Click for video step</Text>
                     </View>
                   </View>
-                ))}
+                </TouchableOpacity>
               </>
             )}
           </ScrollView>

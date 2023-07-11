@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "962658081843",
+    "firebase_url": "https://hire-job-94339-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "hire-job-94339",
+    "storage_bucket": "hire-job-94339.appspot.com",
+    "databaseURL": "https://hire-job-94339-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "database_url": "https://hire-job-94339-default-rtdb.asia-southeast1.firebasedatabase.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962658081843:android:815031426a96a90e791746",
+        "android_client_info": {
+          "package_name": "com.food_recipe_apps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "962658081843-brndkr68sr62rltpc9o6rl4281u9ub10.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeIdD-8NoB3U-JO74IH1LKpKwP3VKmZbg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "962658081843-brndkr68sr62rltpc9o6rl4281u9ub10.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

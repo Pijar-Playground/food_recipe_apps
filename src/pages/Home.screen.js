@@ -17,10 +17,17 @@ import {
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Searchbar, Text, Avatar, Card} from 'react-native-paper';
+import {useDispatch, useSelector} from 'react-redux';
+import {addRecipe, getSelectedRecipe} from '../store/reducers/recipeSlice';
+import axios from 'axios';
+import database from '@react-native-firebase/database';
+import analytics from '@react-native-firebase/analytics';
 
 function Home(props) {
+  const dispatch = useDispatch();
   const {navigation} = props;
   const isDarkMode = useColorScheme() === 'dark';
+  const [popularRecipeList, sePopularRecipeList] = React.useState([]);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -29,6 +36,21 @@ function Home(props) {
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const onChangeSearch = query => setSearchQuery(query);
+
+  React.useEffect(() => {
+    axios
+      .get('http://10.0.2.2:3200/v1/recipe/all')
+      .then(res => sePopularRecipeList(res?.data?.data ?? []));
+    // .catch(err => console.log(err.response));
+
+    // database().setLoggingEnabled();
+
+    database()
+      .ref('/')
+      .on('value', snapshot => {
+        console.log('User data: ', snapshot.val());
+      });
+  }, []);
 
   return (
     <>
@@ -59,12 +81,24 @@ function Home(props) {
               Populer check
             </Text>
             <ScrollView horizontal>
-              {[...new Array(4)].map((item, key) => (
+              {popularRecipeList.map((item, key) => (
                 <TouchableOpacity
                   key={key}
-                  onPress={() => navigation.navigate('Detail')}>
+                  onPress={async () => {
+                    dispatch(addRecipe(item));
+                    dispatch(getSelectedRecipe(item.id));
+
+                    await analytics().logEvent('basket', {
+                      id: 3745092,
+                      item: 'mens grey t-shirt',
+                      description: ['round neck', 'long sleeved'],
+                      size: 'L',
+                    });
+
+                    navigation.navigate('Detail');
+                  }}>
                   <ImageBackground
-                    source={require('../assets/dummy_recipe.png')}
+                    source={{uri: item?.image}}
                     // resizeMode="cover"
                     style={{
                       height: 150,
@@ -82,9 +116,14 @@ function Home(props) {
                     <View>
                       <Text
                         variant="titleLarge"
-                        style={{color: '#fff'}}
+                        style={{
+                          color: '#fff',
+                          textShadowColor: 'rgba(0, 0, 0, 0.75)',
+                          textShadowOffset: {width: -1, height: 1},
+                          textShadowRadius: 10,
+                        }}
                         numberOfLines={1}>
-                        Banana Lemonilo asdasdasdasdasdasdasdasdsad
+                        {item?.name}
                       </Text>
                     </View>
                   </ImageBackground>
